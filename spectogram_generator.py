@@ -1,23 +1,27 @@
 import re
 import os
+import numpy as np
 import scipy.io.wavfile as wavfile
 import pandas as pd
 import matplotlib.pyplot as plt
 import threading
 import argparse
+import librosa
+import librosa.display
 
 
 def generate_spectogram(wav_file, outfile):
-    rate, data = wavfile.read(wav_file)
-    fig,ax = plt.subplots(1)
-    fig.subplots_adjust(left=0,right=1,bottom=0,top=1)
-    ax.axis('off')
-    pxx, freqs, bins, im = ax.specgram(x=data, Fs=rate, noverlap=384, NFFT=512)
-    ax.axis('off')
-    fig.savefig(outfile, dpi=300, frameon='false')
+    # print(f"{wav_file}: {outfile}")
+    sample_rate, data = wavfile.read(wav_file)
+    mel = librosa.feature.melspectrogram(y=data.astype("float64"), sr=sample_rate)
+    fig, ax = plt.subplots()
+    mel_sgram = librosa.amplitude_to_db(mel, ref=np.min)
+    librosa.display.specshow(mel_sgram, sr=sample_rate)
+
+    plt.savefig(outfile)
 
 
-def runner(csv_filename, threads):
+def runner(csv_filename):
     try:
         aud_dataset = pd.read_csv(csv_filename)
 
@@ -39,22 +43,14 @@ def runner(csv_filename, threads):
             img_filename = f"{img_filename[:-4]}.png"
             output_file = f"spectograms/{genre}/{img_filename}"
 
-            thread = threading.Thread(target=generate_spectogram, args=(filename, output_file, ))
-            thread.start()
+            generate_spectogram(filename, output_file)
 
-            # print(filename, output_file)
-            # generate_spectogram(filename, output_file)
             print(f"COUNT: {i}", end="\r")
-
-            if i%threads==0:
-                thread.join()
-            elif i==len(aud_dataset):
-                thread.join()
 
         return True
             
     except:
-        exit()
+        raise
 
 
 if __name__=="__main__":
@@ -65,15 +61,8 @@ if __name__=="__main__":
         help="Mapped CSV filename",
         required=True
     )
-    parser.add_argument(
-        "-t", "--thread",
-        type=int,
-        help="Threads",
-        default=1
-    )
     args = parser.parse_args()
 
     csv_file = args.file
-    thread = args.thread
 
-    runner(csv_filename=csv_file, threads=thread)
+    runner(csv_filename=csv_file)

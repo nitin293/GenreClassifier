@@ -1,9 +1,8 @@
 import os
-import glob
 import pandas as pd
 import argparse
 
-def audio_mapper():
+def audio_mapper(DATA_PATH):
     try:
         LABELS = os.listdir(DATA_PATH)
 
@@ -11,7 +10,8 @@ def audio_mapper():
 
         for LABEL in LABELS:
             data_dir = f"{DATA_PATH}/{LABEL}"
-            files = glob.glob(f"{data_dir}/*.wav")
+            files = os.listdir(f"{data_dir}")
+            files = [f"{data_dir}/{file}" for file in files]
             data = {"file": files, "genre": [LABEL]*len(files)}
 
             df = pd.DataFrame(data)
@@ -38,4 +38,9 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     DATA_PATH = args.path
-    audio_mapper(DATA_PATH)
+    mapper = audio_mapper(DATA_PATH)
+
+    if mapper:
+        print("[+] DONE !")
+    else:
+        print("[!] FAILED !")
