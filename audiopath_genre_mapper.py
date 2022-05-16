@@ -1,17 +1,16 @@
 import os
 import glob
 import pandas as pd
+import argparse
 
-"""# **Mapping {AUDIO -> GENRE} into CSV**"""
-
-def audio_mapper(ORIGIN_DIR):
+def audio_mapper():
     try:
-        LABELS = os.listdir(ORIGIN_DIR)
+        LABELS = os.listdir(DATA_PATH)
 
         dataframes = []
 
         for LABEL in LABELS:
-            data_dir = f"{ORIGIN_DIR}/{LABEL}"
+            data_dir = f"{DATA_PATH}/{LABEL}"
             files = glob.glob(f"{data_dir}/*.wav")
             data = {"file": files, "genre": [LABEL]*len(files)}
 
@@ -29,8 +28,14 @@ def audio_mapper(ORIGIN_DIR):
 
 
 if __name__=="__main__":
-    ORIGIN_DIR = "/content/drive/MyDrive/Genre-Classification/Data/genres_original"
-    audio_mapper(ORIGIN_DIR)
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-p", "--path",
+        help="Dataset Path",
+        required=True
+    )
+    args = parser.parse_args()
 
-
-
+    DATA_PATH = args.path
+    audio_mapper(DATA_PATH)

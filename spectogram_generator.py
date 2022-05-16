@@ -5,6 +5,7 @@ import scipy
 import scipy.io.wavfile as wavfile
 import librosa
 import matplotlib.pyplot as plt
+import argparse
 
 
 def generate_spectogram(csv_filename): 
@@ -32,5 +33,13 @@ def generate_spectogram(csv_filename):
 
 
 if __name__=="__main__":
-    csv_file = "./file_label.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-f", "--file",
+        help="Mapped CSV filename",
+        required=True
+    )
+    args = parser.parse_args()
+
+    csv_file = args.file
     generate_spectogram(csv_file)
