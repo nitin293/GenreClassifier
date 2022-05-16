@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import argparse
 
-def audio_mapper(DATA_PATH):
+def audio_mapper(DATA_PATH, OUTPUT_FILE):
     try:
         LABELS = os.listdir(DATA_PATH)
 
@@ -18,7 +18,7 @@ def audio_mapper(DATA_PATH):
             dataframes.append(df)
 
             dataset = pd.concat(dataframes, ignore_index=True)
-            dataset.to_csv("./file_label.csv", index=False)
+            dataset.to_csv(f"./{OUTPUT_FILE}", index=False)
 
         return True
 
@@ -35,10 +35,17 @@ if __name__=="__main__":
         help="Dataset Path",
         required=True
     )
+    parser.add_argument(
+        "-o", "--output",
+        help="Output CSV filename",
+        required=True
+    )
     args = parser.parse_args()
 
     DATA_PATH = args.path
-    mapper = audio_mapper(DATA_PATH)
+    OUTPUT_FILE = args.output
+
+    mapper = audio_mapper(DATA_PATH, OUTPUT_FILE)
 
     if mapper:
         print("[+] DONE !")
