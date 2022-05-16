@@ -1,16 +1,14 @@
 import re
-import pandas as pd
-import numpy as np
-import scipy
+import os
 import scipy.io.wavfile as wavfile
-import librosa
+import pandas as pd
 import matplotlib.pyplot as plt
 import threading
 import argparse
 
 
-def generate_spectogram(wavfile, outfile):
-    rate, data = wavfile.read(wavfile)
+def generate_spectogram(wav_file, outfile):
+    rate, data = wavfile.read(wav_file)
     fig,ax = plt.subplots(1)
     fig.subplots_adjust(left=0,right=1,bottom=0,top=1)
     ax.axis('off')
@@ -39,20 +37,24 @@ def runner(csv_filename, threads):
 
             img_filename = re.findall(f'[a-zA-Z0-9.]+', filename)[-1]
             img_filename = f"{img_filename[:-4]}.png"
-            output_file = f"./spectograms/{genre}/{img_filename}"
+            output_file = f"spectograms/{genre}/{img_filename}"
 
             thread = threading.Thread(target=generate_spectogram, args=(filename, output_file, ))
             thread.start()
+
+            # print(filename, output_file)
+            # generate_spectogram(filename, output_file)
+            print(f"COUNT: {i}", end="\r")
 
             if i%threads==0:
                 thread.join()
             elif i==len(aud_dataset):
                 thread.join()
-            
+
         return True
             
     except:
-        raise
+        exit()
 
 
 if __name__=="__main__":
