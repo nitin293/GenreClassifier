@@ -24,6 +24,8 @@ A project on detection of Genre of music using Neural Network.
 
 ## Usage
 
+#### **PREPARE DATASET**
+
 > STEP 1: Install Requirements  
 ```
 $ python3 -m pip install -r requirements.txt
@@ -31,6 +33,6 @@ $ python3 -m pip install -r requirements.txt
 
 > STEP 2: Build the Mapped Dataset
 ```
-$ python3 dataset generator -d <Dataset> -o <dataset>.csv
+$ python imgDataset.py -d <Dataset> -o <dataset>.csv
 ```
 

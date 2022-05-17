@@ -35,7 +35,7 @@ def csv_map(DATA_PATH, OUTPUT_CSV):
         return False
 
 
-def runner(output_csv, data_path):
+def generate(data_path, output_csv):
     try:
         csv_map(DATA_PATH=data_path, OUTPUT_CSV="__temp_map__.csv")
         aud_dataset = pd.read_csv("__temp_map__.csv")
@@ -63,10 +63,8 @@ def runner(output_csv, data_path):
 
             print(f"COUNT: {i}", end="\r")
 
-        return True
-
     except:
-        pass
+        raise
 
 
 if __name__=="__main__":
@@ -89,4 +87,4 @@ if __name__=="__main__":
     output_csv = args.output
     data_path = args.data
 
-    runner(output_csv=output_csv, data_path=data_path)
+    generate(output_csv=output_csv, data_path=data_path)
