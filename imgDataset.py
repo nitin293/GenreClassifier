@@ -1,38 +1,11 @@
-import cv2
 from modules import img_mapper
-import pandas as pd
 import argparse
-
-
-def readIMG(image):
-    img = cv2.imread(image)
-
-    return img
-
+import os
 
 def prepare_dataset(AUDIO_DATA_PATH, OUTPUT_CSV):
     try:
-        img_mapper.generate(data_path=AUDIO_DATA_PATH, output_csv="__tmp_img_dataset__.csv")
-        dataset = pd.read_csv("__tmp_img_dataset__.csv")
-
-        images = []
-        genres = []
-
-        for index in range(len(dataset)):
-            img_file = dataset.iloc[index]["file"]
-            img = readIMG(img_file)
-            img_genre = dataset.iloc[index]["genre"]
-
-            images.append(img)
-            genres.append(img_genre)
-
-        data = {
-            "image": images,
-            "genre": genres
-        }
-
-        dataframe = pd.DataFrame(data)
-        dataframe.to_csv(OUTPUT_CSV, index=False)
+        img_mapper.generate(data_path=AUDIO_DATA_PATH, output_csv=OUTPUT_CSV)
+        os.remove("__tmp_map__.csv")
 
         return True
 
