@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import argparse
 
-def audio_mapper(DATA_PATH, OUTPUT_FILE):
+def mapper(DATA_PATH, OUTPUT_FILE):
     try:
         LABELS = os.listdir(DATA_PATH)
 
@@ -45,7 +45,7 @@ if __name__=="__main__":
     DATA_PATH = args.path
     OUTPUT_FILE = args.output
 
-    mapper = audio_mapper(DATA_PATH, OUTPUT_FILE)
+    mapper = mapper(DATA_PATH, OUTPUT_FILE)
 
     if mapper:
         print("[+] DONE !")
