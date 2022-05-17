@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import argparse
 import librosa
 import librosa.display
-import mapper
+from modules import mapper
 
 
 def generate_spectogram(wav_file, outfile):
