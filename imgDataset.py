@@ -5,8 +5,7 @@ import os
 def prepare_dataset(AUDIO_DATA_PATH, OUTPUT_CSV):
     try:
         img_mapper.generate(data_path=AUDIO_DATA_PATH, output_csv=OUTPUT_CSV)
-        os.remove("__tmp_map__.csv")
-
+        os.remove("__temp_map__.csv")
         return True
 
     except:

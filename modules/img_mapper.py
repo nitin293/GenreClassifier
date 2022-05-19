@@ -19,6 +19,7 @@ def generate_spectogram(wav_file, outfile):
         librosa.display.specshow(mel_sgram, sr=sample_rate)
 
         plt.savefig(outfile)
+        plt.close()
 
     except ValueError:
         print(f"ERROR IN FILE: {wav_file}")
