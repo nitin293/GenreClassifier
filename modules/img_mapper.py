@@ -8,18 +8,26 @@ import argparse
 import librosa
 import librosa.display
 from modules import mapper
+import cv2
+
+def reshape(image, shape):
+    img = cv2.imread(image)
+    img = cv2.resize(img, shape)
+    cv2.imwrite(image, img)
 
 
-def generate_spectogram(wav_file, outfile):
+def generate_spectogram(wav_file, outfile, shape=None):
     try:
         sample_rate, data = wavfile.read(wav_file)
         mel = librosa.feature.melspectrogram(y=data.astype("float64"), sr=sample_rate)
         fig, ax = plt.subplots()
         mel_sgram = librosa.amplitude_to_db(mel, ref=np.min)
         librosa.display.specshow(mel_sgram, sr=sample_rate)
-
         plt.savefig(outfile)
         plt.close()
+
+        if shape:
+            reshape(image=outfile, shape=shape)
 
     except ValueError:
         print(f"ERROR IN FILE: {wav_file}")
@@ -36,7 +44,7 @@ def csv_map(DATA_PATH, OUTPUT_CSV):
         return False
 
 
-def generate(data_path, output_csv):
+def generate(data_path, output_csv, shape=None):
     try:
         csv_map(DATA_PATH=data_path, OUTPUT_CSV="__temp_map__.csv")
         aud_dataset = pd.read_csv("__temp_map__.csv")
@@ -59,7 +67,7 @@ def generate(data_path, output_csv):
             img_filename = f"{img_filename[:-4]}.png"
             output_file = f"spectograms/{genre}/{img_filename}"
 
-            generate_spectogram(filename, output_file)
+            generate_spectogram(filename, output_file, shape)
             mapper.mapper(DATA_PATH="spectograms", OUTPUT_FILE=output_csv)
 
             print(f"COUNT: {i}", end="\r")
