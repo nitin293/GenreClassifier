@@ -10,7 +10,7 @@ def prepare_dataset(AUDIO_DATA_PATH, OUTPUT_CSV, SHAPE=None):
         return True
 
     except:
-        raise
+        pass
 
 
 if __name__ == '__main__':
