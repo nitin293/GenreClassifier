@@ -12,7 +12,6 @@ def to_wav(src, dst):
     sound = AudioSegment.from_mp3(src)
     sound.export(dst, format="wav")
 
-
 def reshape(image, shape):
     img = cv2.imread(image)
     img = cv2.resize(img, shape)
@@ -62,9 +61,14 @@ def predict(audio_file, shape):
 
     filename = '.'.join(audio_file.split('.')[:-1])
     img_filename = f"{filename}.png"
-    out_wav = f"{filename}.wav"
 
-    to_wav(src=audio_file, dst=out_wav)
+    if audio_file.endswith(".mp3"):
+        out_wav = f"{filename}.wav"
+        to_wav(src=audio_file, dst=out_wav)
+
+    else:
+        out_wav = audio_file
+
     generate_spectogram(out_wav, img_filename, shape)
     model = tf.keras.models.load_model('GenreClassifier')
 
