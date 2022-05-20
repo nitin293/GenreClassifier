@@ -33,6 +33,15 @@ $ python3 -m pip install -r requirements.txt
 
 > STEP 2: Build the Mapped Dataset
 ```
-$ python imgDataset.py -d <Dataset> -o <dataset>.csv
+$ python3 imgDataset.py -d <Dataset> -s <image_width>,<image_height> -o <dataset>.csv
 ```
 
+> STEP 3: Train Dataset
+```
+$ python3 trainCNN.py -d <Dataset> -b <batch-size> -e <epochs> -s <image_width>,<image_height> -o <Output-Model-Name>
+```
+
+> STEP 4: Test on new Audio file
+```
+$ python3 predict.py -a <Audio File>
+```

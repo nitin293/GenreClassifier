@@ -6,19 +6,12 @@ import re
 import librosa.display
 import matplotlib.pyplot as plt
 import argparse
+from pydub import AudioSegment
 
-genres = sorted([
-    'blues',
-    'classical',
-    'country',
-    'disco',
-    'hiphop',
-    'jazz',
-    'metal',
-    'pop',
-    'reggae',
-    'rock'
-])
+def to_wav(src, dst):
+    sound = AudioSegment.from_mp3(src)
+    sound.export(dst, format="wav")
+
 
 def reshape(image, shape):
     img = cv2.imread(image)
@@ -54,16 +47,31 @@ def load_and_prep_image(filename, img_shape):
 
 
 def predict(audio_file, shape):
-    img_filename = '.'.join(audio_file.split('.')[:-1])
-    img_filename = f"{img_filename}.png"
+    genres = sorted([
+        'blues',
+        'classical',
+        'country',
+        'disco',
+        'hiphop',
+        'jazz',
+        'metal',
+        'pop',
+        'reggae',
+        'rock'
+    ])
 
-    generate_spectogram(audio_file, img_filename, shape)
+    filename = '.'.join(audio_file.split('.')[:-1])
+    img_filename = f"{filename}.png"
+    out_wav = f"{filename}.wav"
+
+    to_wav(src=audio_file, dst=out_wav)
+    generate_spectogram(out_wav, img_filename, shape)
     model = tf.keras.models.load_model('GenreClassifier')
 
     img = load_and_prep_image(img_filename, img_shape=shape[0])
     img = tf.expand_dims(img, axis=0)
     y_prob = model.predict(img)
-    y_class = y_prob.argmax(axis=-1)
+    y_class = y_prob.argmax(axis=-1)[0]
 
     return genres[y_class]
 

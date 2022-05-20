@@ -70,7 +70,7 @@ def CNN(n_classes, image_size, batch_size, channels=3):
     return model
 
 
-def train(DIR, BATCH, SHAPE, EPOCHS):
+def train(DIR, BATCH, SHAPE, EPOCHS, OUTPUT=None):
     train_ds, test_ds, val_ds, n_classes = load_data(DIR=DIR, BATCH=BATCH, SHAPE=SHAPE)
     model = CNN(n_classes=n_classes, image_size=SHAPE, batch_size=BATCH)
 
@@ -80,6 +80,9 @@ def train(DIR, BATCH, SHAPE, EPOCHS):
         validation_data=val_ds,
         epochs=EPOCHS,
     )
+
+    if OUTPUT:
+        model.save(OUTPUT)
 
     return history
 
@@ -114,14 +117,20 @@ if __name__ == '__main__':
         type=int,
         required=True
     )
+    parser.add_argument(
+        "-o", "--output",
+        help="Output model name",
+        type=str
+    )
     args = parser.parse_args()
 
     DIR = args.dataset
     BATCH = args.batch
     EPOCHS = args.epochs
+    OUTPUT = args.output
 
     SHAPE = args.shape
     SHAPE = re.findall('[0-9]+', SHAPE)
     SHAPE = tuple(int(size) for size in SHAPE)
 
-    train(DIR=DIR, BATCH=BATCH, SHAPE=SHAPE, EPOCHS=EPOCHS)
+    train(DIR=DIR, BATCH=BATCH, SHAPE=SHAPE, EPOCHS=EPOCHS, OUTPUT=OUTPUT)
