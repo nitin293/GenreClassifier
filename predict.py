@@ -45,7 +45,7 @@ def load_and_prep_image(filename, img_shape):
     return img
 
 
-def predict(audio_file, shape):
+def predict(audio_file, shape, MODEL):
     genres = sorted([
         'blues',
         'classical',
@@ -70,7 +70,7 @@ def predict(audio_file, shape):
         out_wav = audio_file
 
     generate_spectogram(out_wav, img_filename, shape)
-    model = tf.keras.models.load_model('GenreClassifier')
+    model = tf.keras.models.load_model(MODEL)
 
     img = load_and_prep_image(img_filename, img_shape=shape[0])
     img = tf.expand_dims(img, axis=0)
@@ -89,6 +89,12 @@ if __name__ == '__main__':
         required=True
     )
     parser.add_argument(
+        "-m", "--model",
+        help="Model Directory",
+        type=str,
+        required=True
+    )
+    parser.add_argument(
         "-s", "--shape",
         help="Image shape",
         type=str,
@@ -98,8 +104,9 @@ if __name__ == '__main__':
 
     AUDIO = args.audio
     SHAPE = args.shape
+    MODEL = args.model
     SHAPE = re.findall('[0-9]+', SHAPE)
     SHAPE = tuple(int(size) for size in SHAPE)
 
-    genre = predict(audio_file=AUDIO, shape=SHAPE)
+    genre = predict(audio_file=AUDIO, shape=SHAPE, MODEL=MODEL)
     print(f"GENRE: {genre}")
