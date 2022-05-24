@@ -44,32 +44,30 @@ def csv_map(DATA_PATH, OUTPUT_CSV):
         return False
 
 
-def generate(data_path, output_csv, shape=None):
+def generate(data_path, output_dir, shape=None):
     try:
         csv_map(DATA_PATH=data_path, OUTPUT_CSV="__temp_map__.csv")
         aud_dataset = pd.read_csv("__temp_map__.csv")
 
-        dir = "spectograms"
-        if dir not in os.listdir():
-            os.mkdir(dir)
+
+        if output_dir not in os.listdir():
+            os.mkdir(output_dir)
 
         genres = aud_dataset["genre"]
         for genre in genres:
-            genre_dir = f"{dir}/{genre}"
-            if genre not in os.listdir(dir):
+            genre_dir = f"{output_dir}/{genre}"
+            if genre not in os.listdir(output_dir):
                 os.mkdir(genre_dir)
 
         for i in range(len(aud_dataset)):
             filename = aud_dataset.iloc[i]["file"]
             genre = aud_dataset.iloc[i]["genre"]
 
-            img_filename = re.findall(f'[a-zA-Z0-9.]+', filename)[-1]
+            img_filename = re.findall(f'[a-zA-Z0-9._]+', filename)[-1]
             img_filename = f"{img_filename[:-4]}.png"
-            output_file = f"spectograms/{genre}/{img_filename}"
+            output_file = f"{output_dir}/{genre}/{img_filename}"
 
             generate_spectogram(filename, output_file, shape)
-            mapper.mapper(DATA_PATH="spectograms", OUTPUT_FILE=output_csv)
-
             print(f"COUNT: {i}", end="\r")
 
     except:
@@ -82,7 +80,7 @@ if __name__=="__main__":
     parser.add_argument(
         "-o", "--output",
         type=str,
-        help="Output CSV filename",
+        help="Output Directory",
         required=True
     )
     parser.add_argument(
@@ -93,7 +91,7 @@ if __name__=="__main__":
     )
     args = parser.parse_args()
 
-    output_csv = args.output
+    output_dir = args.output
     data_path = args.data
 
-    generate(output_csv=output_csv, data_path=data_path)
+    generate(output_dir=output_dir, data_path=data_path)

@@ -29,9 +29,9 @@ def load_data(DIR, BATCH, SHAPE):
     train_ds, val_ds, test_ds = get_dataset_partitions_tf(dataset)
     n_classes = len(dataset.class_names)
 
-    train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
-    val_ds = val_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
-    test_ds = test_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
+    train_ds = train_ds.cache().shuffle(100).prefetch(buffer_size=tf.data.AUTOTUNE)
+    val_ds = val_ds.cache().shuffle(100).prefetch(buffer_size=tf.data.AUTOTUNE)
+    test_ds = test_ds.cache().shuffle(100).prefetch(buffer_size=tf.data.AUTOTUNE)
 
     return train_ds, test_ds, val_ds, n_classes
 
