@@ -35,7 +35,8 @@ def save_mfcc(dataset_path, json_path, SAMPLE_RATE, TRACK_DURATION, hop_length, 
 
                         mfcc = librosa.feature.mfcc(
                             signal[start:finish],
-                            sample_rate
+                            sample_rate,
+                            hop_length=hop_length
                         )
                         mfcc = mfcc.T
 

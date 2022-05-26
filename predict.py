@@ -20,7 +20,7 @@ def load_data(data_dict):
     return X
 
 
-def get_mfcc(FILE_PATH, SAMPLE_RATE=22050, num_mfcc=13, n_fft=2048, hop_length=512):
+def get_mfcc(FILE_PATH, SAMPLE_RATE=22050, hop_length=512):
     data = {
         "mfcc": []
     }
@@ -28,7 +28,7 @@ def get_mfcc(FILE_PATH, SAMPLE_RATE=22050, num_mfcc=13, n_fft=2048, hop_length=5
     try:
         signal, sample_rate = librosa.load(FILE_PATH, sr=SAMPLE_RATE)
 
-        mfcc = librosa.feature.mfcc(signal, sample_rate, n_mfcc=num_mfcc, n_fft=n_fft, hop_length=hop_length)
+        mfcc = librosa.feature.mfcc(signal, sample_rate, hop_length=hop_length)
         mfcc = mfcc.T
 
         data["mfcc"].append(mfcc.tolist())
@@ -37,48 +37,6 @@ def get_mfcc(FILE_PATH, SAMPLE_RATE=22050, num_mfcc=13, n_fft=2048, hop_length=5
 
     except:
         pass
-
-
-def build_model(input_shape, n_classes):
-    try:
-        model = keras.Sequential()
-
-        # 1st conv layer
-        model.add(keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
-        model.add(keras.layers.MaxPooling2D((3, 3), strides=(2, 2), padding='same'))
-        model.add(keras.layers.BatchNormalization())
-
-        # 2nd conv layer
-        model.add(keras.layers.Conv2D(32, (3, 3), activation='relu'))
-        model.add(keras.layers.MaxPooling2D((3, 3), strides=(2, 2), padding='same'))
-        model.add(keras.layers.BatchNormalization())
-
-        # 3rd conv layer
-        model.add(keras.layers.Conv2D(32, (2, 2), activation='relu'))
-        model.add(keras.layers.MaxPooling2D((2, 2), strides=(2, 2), padding='same'))
-        model.add(keras.layers.BatchNormalization())
-
-        # flatten output and feed it into dense layer
-        model.add(keras.layers.Flatten())
-        model.add(keras.layers.Dense(64, activation='relu'))
-        model.add(keras.layers.Dropout(0.3))
-
-        # output layer
-        model.add(keras.layers.Dense(n_classes, activation='softmax'))
-
-        optimiser = keras.optimizers.Adam(learning_rate=LEARNING_RATE)
-        model.compile(
-            optimizer=optimiser,
-            loss='sparse_categorical_crossentropy',
-            metrics=['accuracy']
-        )
-
-        return model
-
-    except:
-        print("MODEL BUILDING FAILED!")
-        exit()
-
 
 
 def predict(FILE_PATH, MODEL_PATH, SHAPE):
@@ -102,7 +60,6 @@ def predict(FILE_PATH, MODEL_PATH, SHAPE):
         FILE_PATH = OUT_PATH
 
     model = keras.models.load_model(MODEL_PATH)
-    model.summary()
 
     data = get_mfcc(FILE_PATH)
 
@@ -136,7 +93,7 @@ if __name__ == "__main__":
         '-s', '--shape',
         help="Desired shape of input file",
         type=str,
-        required=True
+        default="130,20"
     )
     args = parser.parse_args()
 
