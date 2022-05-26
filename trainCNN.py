@@ -119,7 +119,7 @@ def trainCNN(DATA_PATH, TEST_SIZE, VALIDATION_SIZE, LEARNING_RATE, BATCH_SIZE, E
     model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=BATCH_SIZE, epochs=EPOCHS)
 
     if OUTPUT_MODEL:
-        model.save_model(OUTPUT_MODEL)
+        model.save(OUTPUT_MODEL)
 
     for i in range(5):
         # pick a sample to predict from the test set
