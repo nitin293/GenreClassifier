@@ -82,20 +82,9 @@ def build_model(input_shape, n_classes, LEARNING_RATE):
 
 
 def predict(model, X, y):
-    """Predict a single sample using the trained model
-
-    :param model: Trained classifier
-    :param X: Input data
-    :param y (int): Target
-    """
-
-    # add a dimension to input data for sample - model.predict() expects a 4d array in this case
     X = X[np.newaxis, ...] # array shape (1, 130, 13, 1)
 
-    # perform prediction
     prediction = model.predict(X)
-
-    # get index with max value
     predicted_index = np.argmax(prediction, axis=1)
 
     print("Target: {}, Predicted label: {}".format(y, predicted_index))
